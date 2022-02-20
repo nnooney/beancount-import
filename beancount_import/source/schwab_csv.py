@@ -153,6 +153,7 @@ CASH_CURRENCY="USD"
 class BrokerageAction(enum.Enum):
     # Please keep these alphabetized:
     ADR_MGMT_FEE = "ADR Mgmt Fee"
+    ADVISOR_FEE = "Advisor Fee"
     BANK_INTEREST = "Bank Interest"
     BOND_INTEREST = "Bond Interest"
     BUY = "Buy"
@@ -408,6 +409,7 @@ class RawBrokerageEntry(RawEntry):
             return FundGainsDistribution(symbol=self.symbol, capital_gains_account=capital_gains_account, **shared_attrs)
 
         if self.action in (BrokerageAction.ADR_MGMT_FEE,
+                           BrokerageAction.ADVISOR_FEE,
                            BrokerageAction.SERVICE_FEE,
                            BrokerageAction.MISC_CASH_ENTRY):
             # MISC_CASH_ENTRY appears to only be used to refund fees.
