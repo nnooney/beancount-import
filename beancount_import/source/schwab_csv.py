@@ -178,6 +178,7 @@ class BrokerageAction(enum.Enum):
     NON_QUALIFIED_DIVIDEND = "Non-Qualified Div"
     REINVEST_DIVIDEND = "Reinvest Dividend"
     REINVEST_SHARES = "Reinvest Shares"
+    REORGANIZED_ISSUE = "Reorganized Issue"
     REVERSE_SPLIT = "Reverse Split"
     SECURITY_TRANSFER = "Security Transfer"
     SELL = "Sell"
@@ -416,7 +417,7 @@ class RawBrokerageEntry(RawEntry):
             return TaxPaid(taxes_account=taxes_account, **shared_attrs)
         if self.action == BrokerageAction.MARGIN_INTEREST or self.action == BrokerageAction.CREDIT_INTEREST:
             return Interest(interest_account=interest_account, **shared_attrs)
-        if self.action == BrokerageAction.EXPIRED:
+        if self.action == BrokerageAction.EXPIRED or self.action == BrokerageAction.REORGANIZED_ISSUE:
             assert self.quantity is not None
             price = Decimal(0) if self.price is None else self.price
             lot_info = lots.get_sale_lots(schwab_account, self.symbol, self.date, self.quantity)
@@ -1142,7 +1143,7 @@ DIV_INCOME_ACCOUNT_KEY = "div_income_account"
 FEES_ACCOUNT_KEY = "fees_account"
 CAPITAL_GAINS_ACCOUNT_KEY = "capital_gains_account"
 TAXES_ACCOUNT_KEY = "taxes_account"
-ACCOUNT_RE = r"(?P<account_type>[a-zA-Z\s]*\s+)?(?P<account>[^\s]+)"
+ACCOUNT_RE = r"(?P<account_type>[a-zA-Z0-9\s]*\s+)?(?P<account>[^\s]+)"
 TITLE_RE = re.compile(
     r'"?Transactions\s+for\s+(?:[a-zA-Z]*\s+)?account '
     + ACCOUNT_RE +
